@@ -19,7 +19,7 @@ use crate::error;
 use crate::extension::Extension;
 use crate::metadata::{Database, DATABASE};
 use crate::national_number::NationalNumber;
-use crate::phone_number::{PhoneNumber, Type};
+use crate::phone_number::PhoneNumber;
 use crate::validator::{self, Validation};
 
 use nom::{branch::alt, IResult};
@@ -65,7 +65,8 @@ pub fn parse_with<S: AsRef<str>>(
             }
         }
 
-        if validator::length(meta, &potential, Type::Unknown) != Validation::TooShort {
+        let number_type = validator::number_type(meta, &number.national);
+		if validator::length(meta, &potential, number_type) != Validation::TooShort {
             number = potential;
         }
     }

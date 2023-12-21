@@ -115,7 +115,9 @@ pub fn length(meta: &Metadata, number: &ParseNumber, kind: Type) -> Validation {
 
     let length = number.national.len() as u16;
     let local = &desc.possible_local_length[..];
-    let possible = if desc.possible_length.is_empty() {
+    // If the descriptor possible length value for the chosen type is missing
+	// then try the general description for an alternative.
+	let possible = if !desc.possible_length.is_empty() {
         &desc.possible_length[..]
     } else {
         &meta.descriptors.general.possible_length[..]

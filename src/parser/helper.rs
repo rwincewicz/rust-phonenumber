@@ -29,7 +29,6 @@ use crate::consts;
 use crate::country;
 use crate::error;
 use crate::metadata::{Database, Metadata};
-use crate::phone_number::Type;
 use crate::validator;
 
 macro_rules! parse {
@@ -191,9 +190,11 @@ pub fn country_code<'a>(
                 let meta = database.by_id(country.as_ref()).unwrap();
                 let code = meta.country_code.to_string();
 
+                let number_type = validator::number_type(meta, &number.national);
+
                 if number.national.starts_with(&code)
                     && (!meta.descriptors().general().is_match(&number.national)
-                        || !validator::length(meta, &number, Type::Unknown).is_possible())
+                        || !validator::length(meta, &number, number_type).is_possible())
                 {
                     number.country = country::Source::Number;
                     number.national = trim(number.national, code.len());
